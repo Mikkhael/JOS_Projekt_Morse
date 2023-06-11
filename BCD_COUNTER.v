@@ -1,37 +1,52 @@
-module BCD_COUNTER
+module BCD_PART_COUNTER
 #(
-    parameter DIGITS = 6,
-    parameter W      = 4,
-    parameter MAX    = 9
+    parameter W   = 4,
+    parameter MAX = 9
 )
+(
+    input clk,
+    input sclr,
+    input ce,
+    input set_one,
+
+    output reg [W-1 : 0] cnt = 0,
+    output wire ceo
+);
+
+assign ceo = ce && ( cnt == MAX );
+
+always @(posedge clk) begin
+    if(ce) begin
+        if (set_one) begin
+            cnt <= {{(W-1){1'd0}}, 1'd1};
+        end else if(cnt == MAX || sclr) begin
+            cnt <= 0;
+        end else begin
+            cnt <= cnt + 1'd1;
+        end
+    end
+end
+endmodule
+
+
+module BCD6_COUNTER
 (
     input wire clk,
     input wire ce,
-    input wire clr,
+    input wire sclr,
+    input wire set_one,
 
-    output reg [DIGITS*W-1 : 0] cnt = 0
+    output reg [6*4-1 : 0] cnt = 0
 );
 
-reg [DIGITS : 1] carry = 0;
+    wire [4:0] cnt_ce;
 
-reg [3:0] i;
-always @(posedge clk) begin
-    if(clr) begin
-        cnt <= 0;
-        carry <= 0;
-    end else if(ce) begin
-//        for(i=0; i<DIGITS; i=i+1) begin
-//            if(i == 0 ? 1'd1 : carry[i]) begin
-//                if( cnt[(i+1)*W-1 : i*W] == MAX ) begin
-//                    cnt[(i+1)*W-1 : i*W] <= 0;
-//                end else begin
-//                    cnt[(i+1)*W-1 : i*W] <= cnt[(i+1)*W-1 : i*W] + 1'd1;
-//                end
-//                carry[i+1] <= (cnt[(i+1)*W-1 : i*W] == MAX - 1'd1);
-//            end
-//        end
-			cnt <= cnt + 1'd1;
-    end
-end
+    BCD_PART_COUNTER cnt0( .clk(clk), .sclr(sclr),           .set_one(set_one), .ce(ce),        .cnt(cnt[ 3: 0]), .ceo(cnt_ce[0]));
+    BCD_PART_COUNTER cnt1( .clk(clk), .sclr(sclr | set_one), .set_one(1'd0),    .ce(cnt_ce[0]), .cnt(cnt[ 7: 4]), .ceo(cnt_ce[1]));
+    BCD_PART_COUNTER cnt2( .clk(clk), .sclr(sclr | set_one), .set_one(1'd0),    .ce(cnt_ce[1]), .cnt(cnt[11: 8]), .ceo(cnt_ce[2]));
+    BCD_PART_COUNTER cnt3( .clk(clk), .sclr(sclr | set_one), .set_one(1'd0),    .ce(cnt_ce[2]), .cnt(cnt[15:12]), .ceo(cnt_ce[3]));
+    BCD_PART_COUNTER cnt4( .clk(clk), .sclr(sclr | set_one), .set_one(1'd0),    .ce(cnt_ce[3]), .cnt(cnt[19:16]), .ceo(cnt_ce[4]));
+    BCD_PART_COUNTER cnt5( .clk(clk), .sclr(sclr | set_one), .set_one(1'd0),    .ce(cnt_ce[4]), .cnt(cnt[23:20])                 );
+
 
 endmodule

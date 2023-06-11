@@ -17,10 +17,6 @@ module MAIN(
 
 
 
-wire  [`MORSE_LEN_W-1   : 0] len;
-wire  [`MAX_MORSE_LEN-1 : 0] dits_dahs;
-wire  [`CHAR_W-1        : 0] char;
-
 wire dit_units;
 wire dah_units;
 wire pause_units;
@@ -39,29 +35,30 @@ CONF u_conf(
     .pulses_per_unit( pulses_per_unit )
 );
 
+wire  [`MORSE_LEN_W-1   : 0] len;
+wire  [`MAX_MORSE_LEN-1 : 0] dits_dahs;
+wire  [`CHAR_W-1        : 0] char;
+
 wire error;
 wire char_end;
 wire word_end;
-
-wire [`UNIT_BCD_W*4-1 : 0] units_cnt;
+wire capture_ceo;
 
 MORSE_CAPTURE_CHAR u_capture(
     .clk(~KEY[0]),
     .ce(SW[0]),
-	.dit_units(dit_units),
-	.dah_units(dah_units),
-	.pause_units(pause_units),
-	.char_units(char_units),
-	.word_units(word_units),
-	.tol_units(tol_units),
+	.start(~KEY[3]),
+	.dit_time(40'd10),
+	.dah_time(40'd30),
+	.word_time(40'd70),
+	.tol_time(40'd5),
     .signal(~KEY[1]),
-    .clr(SW[1]),
     .len(len),
     .dits_dahs(dits_dahs),
     .error(error),
     .char_end(char_end),
     .word_end(word_end),
-    .units_cnt(units_cnt)
+	.ceo(capture_ceo)
 );
 
 MORSE_RECOGNIZE_CHAR u_recognize(
@@ -70,8 +67,8 @@ MORSE_RECOGNIZE_CHAR u_recognize(
 	.char(char)
 );
 
-CHAR2SEG seg0 (units_cnt[3:0], HEX0);
-CHAR2SEG seg1 (units_cnt[7:4], HEX1);
+//CHAR2SEG seg0 (units_cnt[3:0], HEX0);
+//CHAR2SEG seg1 (units_cnt[7:4], HEX1);
 CHAR2SEG seg2 (char, HEX2);
 CHAR2SEG seg3 (len, HEX3);
 CHAR2SEG seg4 (`CHAR_CODE_SPACE, HEX4);

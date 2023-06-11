@@ -4,6 +4,7 @@
 `define MANUAL_DEBUG
 
 `define UNIT_BCD_W      6
+`define PULSE_CNT_W     40
 
 `define MAX_MORSE_LEN   5
 `define MORSE_LEN_W     3
