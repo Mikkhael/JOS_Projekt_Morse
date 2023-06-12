@@ -9,6 +9,7 @@
 `define MAX_MORSE_LEN   5
 `define MORSE_LEN_W     3
 `define CHAR_W          6
+`define MAX_CHARS       6
 
 
 `define CHAR_CODE_SPACE   `CHAR_W'd31
@@ -29,6 +30,17 @@
 `define CHAR_CODE_D   `CHAR_W'd13
 `define CHAR_CODE_E   `CHAR_W'd14
 `define CHAR_CODE_F   `CHAR_W'd15
+
+
+`define CHAR_ASCI_ARRAY  "0123456789ABCDEF                "
+
+`define CHAR_MORSE_A   ".-"
+`define CHAR_MORSE_B   "-..."
+`define CHAR_MORSE_C   "-.-."
+`define CHAR_MORSE_D   "-.."
+`define CHAR_MORSE_E   "."
+`define CHAR_MORSE_F   "..-."
+
 
 
 
