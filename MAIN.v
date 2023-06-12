@@ -56,7 +56,6 @@ MORSE_CAPTURE_CHAR u_capture(
     .len(len),
     .dits_dahs(dits_dahs),
     .error(error),
-    .char_end(char_end),
     .word_end(word_end),
 	.ceo(capture_ceo)
 );

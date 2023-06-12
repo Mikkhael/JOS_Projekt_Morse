@@ -1,6 +1,7 @@
 module COUNTER
 #(
-    parameter W   = 4
+    parameter W   = 4,
+    parameter SCLR_VAL = 0
 )
 (
     input clk,
@@ -13,7 +14,7 @@ module COUNTER
 always @(posedge clk) begin
     if(ce) begin
         if(sclr) begin
-            cnt <= 0;
+            cnt <= SCLR_VAL;
         end else begin
             cnt <= cnt + 1'd1;
         end
