@@ -1,6 +1,11 @@
 `include "defines.vh"
 
-module MORSE_CAPTURE_AND_DECODE_WORD(
+module MORSE_CAPTURE_AND_DECODE_WORD
+#(
+    parameter DEBUG_CAPTURE = 0,
+    parameter DEBUG_DECODE = 0
+)
+(
     clk,
     ce,
 
@@ -37,12 +42,9 @@ wire capture_ceo;
 wire capture_word_end;
 
 
-wire capture_start = signal & word_ended;
-
-MORSE_CAPTURE_CHAR u_capture(
+MORSE_CAPTURE_CHAR#(.DEBUG(DEBUG_CAPTURE)) u_capture(
     .clk        (clk),
     .ce         (ce),
-	.start      (capture_start),
 	.dit_time   (dit_time),
 	.dah_time   (dah_time),
 	.word_time  (word_time),
@@ -55,7 +57,7 @@ MORSE_CAPTURE_CHAR u_capture(
 	.ceo        (capture_ceo)
 );
 
-MORSE_DECODE_WORD u_decode(
+MORSE_DECODE_WORD#(.DEBUG(DEBUG_DECODE)) u_decode(
     .clk        (clk),
     .ce         (capture_ceo),
     .dits_dahs  (dits_dahs),

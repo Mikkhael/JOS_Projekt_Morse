@@ -1,6 +1,10 @@
 `include "defines.vh"
 
-module MORSE_DECODE_WORD(
+module MORSE_DECODE_WORD
+#(
+    parameter DEBUG = 0
+)
+(
     clk,
     ce,
 
@@ -39,13 +43,16 @@ always @(posedge clk) begin
     
     if(ce) begin
         if(word_end) begin
+            if(DEBUG) $display("   ENDING DECODE");
             word_ended <= 1;
         end else begin
             if(word_ended) begin
+                if(DEBUG) $display("== STARTING DECODE ==============");
                 word[`CHAR_W*`MAX_CHARS-1 : `CHAR_W] <= {(`MAX_CHARS - 1){ `CHAR_CODE_SPACE }};
             end else begin
                 word[`CHAR_W*`MAX_CHARS-1 : `CHAR_W] <= word[`CHAR_W*(`MAX_CHARS-1)-1 : 0];
             end
+            if(DEBUG) $display("   DECODING CHAR (%b[%2d] -> %2d), err=%b, end=%b", dits_dahs, len, current_char, error, word_end);
             error <= error_in | (error & ~word_ended);
             word[`CHAR_W-1 : 0] <= current_char;
             word_ended <= word_end;

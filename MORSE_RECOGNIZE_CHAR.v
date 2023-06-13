@@ -18,12 +18,12 @@ always @(*) begin
 
 	casex({len, dits_dahs})
 	
-		{3'd2, 5'bxxx01}: char <= `CHAR_CODE_A;
-		{3'd4, 5'bx0111}: char <= `CHAR_CODE_B;
-		{3'd4, 5'bx1010}: char <= `CHAR_CODE_C;
-		{3'd3, 5'bxx100}: char <= `CHAR_CODE_D;
-		{3'd1, 5'bxxxx0}: char <= `CHAR_CODE_E;
-		{3'd4, 5'bx0010}: char <= `CHAR_CODE_F;
+		{`MORSE_LEN_W'd2, 5'bxxx01}: char <= `CHAR_CODE_A;
+		{`MORSE_LEN_W'd4, 5'bx1000}: char <= `CHAR_CODE_B;
+		{`MORSE_LEN_W'd4, 5'bx1010}: char <= `CHAR_CODE_C;
+		{`MORSE_LEN_W'd3, 5'bxx100}: char <= `CHAR_CODE_D;
+		{`MORSE_LEN_W'd1, 5'bxxxx0}: char <= `CHAR_CODE_E;
+		{`MORSE_LEN_W'd4, 5'bx0010}: char <= `CHAR_CODE_F;
 	
 	
 		default: char <= `CHAR_CODE_SPACE;

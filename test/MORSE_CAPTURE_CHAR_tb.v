@@ -6,7 +6,6 @@ module MORSE_CAPTURE_CHAR_tb();
 
 reg clk = 0;
 reg ce = 1;
-reg start = 0;
 reg signal = 0;
 
 reg  [`PULSE_CNT_W-1 : 0] DIT  = 10;
@@ -23,10 +22,9 @@ wire error;
 wire word_end;
 wire capture_ceo;
 
-MORSE_CAPTURE_CHAR u_capture(
+MORSE_CAPTURE_CHAR#(.DEBUG(1)) u_capture(
     .clk(clk),
     .ce(ce),
-	.start(start),
 	.dit_time(DIT),
 	.dah_time(DAH),
 	.word_time(WORD),
@@ -79,19 +77,15 @@ initial begin
     WAIT(10);
     ce = 1;
 
-    START();
     TEST_STR_CHAR("--.-.", 0);
     TEST_STR_CHAR("...",   0);
     TEST_STR_CHAR("---",   1);
 
-    START();
     TEST_STR_CHAR("---.",  0);
     TEST_STR_CHAR("...-",  1);
 
-    START();
     TEST_STR_CHAR(".-.-.", 1);
 
-    START();
     TEST_STR_CHAR("-.-.-", 0);
     TEST_STR_CHAR(".",     0);
     TEST_STR_CHAR("-",     1);
@@ -105,15 +99,6 @@ end
 `include "common_tasks.vh"
 
 
-task automatic START();
-begin
-    #10;
-    start = 1;
-    WAIT(1);
-    start = 0;
-end
-endtask
-
 task automatic TEST_STR_CHAR(input [10*8-1:0] str, input end_word);
     integer i;
 begin
@@ -124,6 +109,5 @@ begin
     WAIT(1);
 end
 endtask
-
 
 endmodule
