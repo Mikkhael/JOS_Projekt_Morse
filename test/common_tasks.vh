@@ -102,7 +102,7 @@ function [9*`MAX_CHARS-1 : 0] word_to_ascii(input [`CHAR_W*`MAX_CHARS-1 : 0] wor
 begin
     for(i=0; i<`MAX_CHARS; i = i + 1) begin
         word_to_ascii = word_to_ascii >> 8;
-        word_to_ascii[8*`MAX_CHARS-1 : 8*(`MAX_CHARS-1)] = `CHAR_ASCI_ARRAY >> (8*(31 - word[`CHAR_W-1 : 0]));
+        word_to_ascii[8*`MAX_CHARS-1 : 8*(`MAX_CHARS-1)] = `CHAR_ASCI_ARRAY >> (8*(`CHARS_COUNT-1 - word[`CHAR_W-1 : 0]));
         word = word >> `CHAR_W;
     end
 end

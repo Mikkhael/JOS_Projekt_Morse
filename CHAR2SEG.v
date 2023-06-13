@@ -5,7 +5,6 @@ module CHAR2SEG(
 	output reg  [6:0] seg
 );
 
-
 always @(*) begin
 
 	case(char)

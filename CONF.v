@@ -30,20 +30,20 @@ output wire ready;
 
 `ifdef MANUAL_DEBUG
 
-	output reg [`UNIT_BCD_W*4-1 : 0] dit_units    = 24'd2;
-	output reg [`UNIT_BCD_W*4-1 : 0] dah_units    = 24'd6;
-	output reg [`UNIT_BCD_W*4-1 : 0] word_units   = 24'd14;
-	output reg [`UNIT_BCD_W*4-1 : 0] tol_units    = 24'd1;
+	output reg [`UNIT_BCD_W*4-1 : 0] dit_units    = 24'h2;
+	output reg [`UNIT_BCD_W*4-1 : 0] dah_units    = 24'h6;
+	output reg [`UNIT_BCD_W*4-1 : 0] word_units   = 24'h14;
+	output reg [`UNIT_BCD_W*4-1 : 0] tol_units    = 24'h1;
 
-	output reg [`UNIT_BCD_W*4-1 : 0] pulses_per_unit = 24'd1;
+	output reg [`UNIT_BCD_W*4-1 : 0] pulses_per_unit = 24'h1;
 
 `else
-	output reg [`UNIT_BCD_W*4-1 : 0] dit_units    = 24'd1000;
-	output reg [`UNIT_BCD_W*4-1 : 0] dah_units    = 24'd3000;
-	output reg [`UNIT_BCD_W*4-1 : 0] word_units   = 24'd7000;
-	output reg [`UNIT_BCD_W*4-1 : 0] tol_units    = 24'd0500;
+	output reg [`UNIT_BCD_W*4-1 : 0] dit_units    = 24'h1000;
+	output reg [`UNIT_BCD_W*4-1 : 0] dah_units    = 24'h3000;
+	output reg [`UNIT_BCD_W*4-1 : 0] word_units   = 24'h7000;
+	output reg [`UNIT_BCD_W*4-1 : 0] tol_units    = 24'h0500;
 
-	output reg [`UNIT_BCD_W*4-1 : 0] pulses_per_unit = 24'd50000;
+	output reg [`UNIT_BCD_W*4-1 : 0] pulses_per_unit = 24'h50000;
 `endif
 
 output wire [`PULSE_CNT_W-1 : 0] dit_time;
@@ -75,14 +75,13 @@ CONF_TO_TIMINGS u_conf_to_timings(
     .ready				(ready)
 );
 
-always @(selected_index) begin
+always @(*) begin
 	case(selected_index)
-		3'd0: selected_value = dit_units;
-		3'd1: selected_value = dah_units;
-		3'd2: selected_value = word_units;
-		3'd3: selected_value = tol_units;
-		3'd4: selected_value = pulses_per_unit;
-		default: selected_value = 0;
+		3'd0:    selected_value <= dit_units;
+		3'd1:    selected_value <= dah_units;
+		3'd2:    selected_value <= word_units;
+		3'd3:    selected_value <= tol_units;
+		default: selected_value <= pulses_per_unit;
 	endcase
 end
 
