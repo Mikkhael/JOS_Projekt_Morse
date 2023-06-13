@@ -26,7 +26,7 @@ always @(*) begin
 		{`MORSE_LEN_W'd4, 5'bx0010}: char <= `CHAR_CODE_F;
 	
 	
-		default: char <= `CHAR_CODE_SPACE;
+		default: char <= `CHAR_CODE__;
 	
 	endcase
 

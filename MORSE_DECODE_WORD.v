@@ -26,7 +26,7 @@ input wire [`MAX_MORSE_LEN-1 : 0] dits_dahs;
 input wire word_end;
 input wire error_in;
 
-output reg [`CHAR_W*`MAX_CHARS-1 : 0] word = {`MAX_CHARS{ `CHAR_CODE_SPACE }};
+output reg [`CHAR_W*`MAX_CHARS-1 : 0] word = {`MAX_CHARS{ `CHAR_CODE__ }};
 output reg word_ended = 1;
 output reg error = 0;
 
@@ -48,7 +48,7 @@ always @(posedge clk) begin
         end else begin
             if(word_ended) begin
                 if(DEBUG) $display("== STARTING DECODE ==============");
-                word[`CHAR_W*`MAX_CHARS-1 : `CHAR_W] <= {(`MAX_CHARS - 1){ `CHAR_CODE_SPACE }};
+                word[`CHAR_W*`MAX_CHARS-1 : `CHAR_W] <= {(`MAX_CHARS - 1){ `CHAR_CODE__ }};
             end else begin
                 word[`CHAR_W*`MAX_CHARS-1 : `CHAR_W] <= word[`CHAR_W*(`MAX_CHARS-1)-1 : 0];
             end

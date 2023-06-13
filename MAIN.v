@@ -17,81 +17,53 @@ module MAIN(
 
 
 
-wire dit_units;
-wire dah_units;
-wire pause_units;
-wire char_units;
-wire word_units;
-wire tol_units;
-wire pulses_per_unit;
+wire clk    = clk50;
+wire ce     = SW[0];
+wire signal = KEY[0];
+
+wire [`PULSE_CNT_W-1 : 0] dit_time;
+wire [`PULSE_CNT_W-1 : 0] dah_time;
+wire [`PULSE_CNT_W-1 : 0] word_time;
+wire [`PULSE_CNT_W-1 : 0] tol_time;
+wire conf_ready;
 
 CONF u_conf(
-	.dit_units( dit_units ),
-    .dah_units( dah_units ),
-    .pause_units( pause_units ),
-    .char_units( char_units ),
-    .word_units( word_units ),
-    .tol_units( tol_units ),
-    .pulses_per_unit( pulses_per_unit )
+    .clk				(clk),
+    .ce					(ce),
+	.dit_time			(dit_time),
+	.dah_time			(dah_time),
+	.word_time			(word_time),
+	.tol_time			(tol_time),
+    .ready				(conf_ready)
 );
 
-wire  [`MORSE_LEN_W-1   : 0] len;
-wire  [`MAX_MORSE_LEN-1 : 0] dits_dahs;
-wire  [`CHAR_W-1        : 0] char;
 
-wire error;
-wire char_end;
-wire word_end;
-wire capture_ceo;
+wire decode_error;
+wire decode_word_ended;
+wire [`CHAR_W*`MAX_CHARS-1 : 0] decode_word;
 
-MORSE_CAPTURE_CHAR u_capture(
-    .clk(~KEY[0]),
-    .ce(SW[0]),
-	.start(~KEY[3]),
-	.dit_time(40'd10),
-	.dah_time(40'd30),
-	.word_time(40'd70),
-	.tol_time(40'd5),
-    .signal(~KEY[1]),
-    .len(len),
-    .dits_dahs(dits_dahs),
-    .error(error),
-    .word_end(word_end),
-	.ceo(capture_ceo)
+MORSE_CAPTURE_AND_DECODE_WORD u_capture_and_decode(
+    .clk         (clk),
+    .ce          (ce & conf_ready),
+	.dit_time    (dit_time),
+	.dah_time    (dah_time),
+	.word_time   (word_time),
+	.tol_time    (tol_time),
+    .signal      (signal),
+    .word        (decode_word),
+    .word_ended  (decode_word_ended),
+    .error       (decode_error)
 );
 
-MORSE_RECOGNIZE_CHAR u_recognize(
-	.len(len),
-	.dits_dahs(dits_dahs),
-	.char(char)
-);
+CHAR2SEG u_seg0 (decode_word >> (0 * `CHAR_W), HEX0);
+CHAR2SEG u_seg1 (decode_word >> (1 * `CHAR_W), HEX1);
+CHAR2SEG u_seg2 (decode_word >> (2 * `CHAR_W), HEX2);
+CHAR2SEG u_seg3 (decode_word >> (3 * `CHAR_W), HEX3);
+CHAR2SEG u_seg4 (decode_word >> (4 * `CHAR_W), HEX4);
+CHAR2SEG u_seg5 (decode_word >> (5 * `CHAR_W), HEX5);
 
-//CHAR2SEG seg0 (units_cnt[3:0], HEX0);
-//CHAR2SEG seg1 (units_cnt[7:4], HEX1);
-CHAR2SEG seg2 (char, HEX2);
-CHAR2SEG seg3 (len, HEX3);
-CHAR2SEG seg4 (`CHAR_CODE_SPACE, HEX4);
-CHAR2SEG seg5 (`CHAR_CODE_SPACE, HEX5);
-
-assign LED[0] = char_end;
-assign LED[1] = word_end;
-assign LED[2] = error;
-
-assign LED[9:5] = dits_dahs;
-
-
-
-//assign len = SW[9:7];
-//assign dits_dahs = SW[4:0];
-//
-//MORSE_RECOGNIZE_CHAR u1(
-//	.len(len),
-//	.dits_dahs(dits_dahs),
-//	.char(char)
-//);
-
-//CHAR2SEG seg0 (char, HEX0);
-
-
+assign LED[0] = decode_word_ended;
+assign LED[1] = conf_ready;
+assign LED[2] = decode_error;
 
 endmodule

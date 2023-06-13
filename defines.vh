@@ -3,16 +3,22 @@
 
 `define MANUAL_DEBUG
 
-`define UNIT_BCD_W      6
-`define PULSE_CNT_W     40
+`define UNIT_BCD_W       6
+`define PULSE_CNT_W      40
+`define PULSE_CNT_HALF_W 20
 
-`define MAX_MORSE_LEN   5
-`define MORSE_LEN_W     3
-`define CHAR_W          6
-`define MAX_CHARS       6
+`define MAX_MORSE_LEN    5
+`define MORSE_LEN_W      3
+`define CHAR_W           7
+`define MAX_CHARS        6
+
+`define DISPLAY_MODE_W   2
+`define DISPLAY_MENU     2'd0
+`define DISPLAY_CONF     2'd1
+`define DISPLAY_MORSE    2'd2
 
 
-`define CHAR_CODE_SPACE   `CHAR_W'd31
+`define CHAR_CODE__   `CHAR_W'd31
 
 `define CHAR_CODE_0   `CHAR_W'd0
 `define CHAR_CODE_1   `CHAR_W'd1
@@ -31,8 +37,36 @@
 `define CHAR_CODE_E   `CHAR_W'd14
 `define CHAR_CODE_F   `CHAR_W'd15
 
+`define CHAR_CODE_G   `CHAR_W'd16
+`define CHAR_CODE_H   `CHAR_W'd17
+`define CHAR_CODE_I   `CHAR_W'd18
+`define CHAR_CODE_J   `CHAR_W'd19
+`define CHAR_CODE_K   `CHAR_W'd20
+`define CHAR_CODE_L   `CHAR_W'd21
+`define CHAR_CODE_M   `CHAR_W'd22
+`define CHAR_CODE_N   `CHAR_W'd23
+`define CHAR_CODE_O   `CHAR_W'd24
+`define CHAR_CODE_P   `CHAR_W'd25
+`define CHAR_CODE_Q   `CHAR_W'd26
+`define CHAR_CODE_R   `CHAR_W'd27
+`define CHAR_CODE_S   `CHAR_W'd28
+`define CHAR_CODE_T   `CHAR_W'd29
+`define CHAR_CODE_U   `CHAR_W'd30
+`define CHAR_CODE_V   `CHAR_W'd31
+`define CHAR_CODE_W   `CHAR_W'd32
+`define CHAR_CODE_X   `CHAR_W'd33
+`define CHAR_CODE_Y   `CHAR_W'd34
+`define CHAR_CODE_Z   `CHAR_W'd35
 
-`define CHAR_ASCI_ARRAY  "0123456789ABCDEF                "
+`define MENU_INDEX_W     2
+`define MENU_INDEX_MAX   2
+
+`define MENU_NAME_DIT    {`CHAR_CODE__, `CHAR_CODE__, `CHAR_CODE__, `CHAR_CODE_D, `CHAR_CODE_I, `CHAR_CODE_T}
+`define MENU_NAME_DAH    {`CHAR_CODE__, `CHAR_CODE__, `CHAR_CODE__, `CHAR_CODE_D, `CHAR_CODE_A, `CHAR_CODE_H}
+`define MENU_NAME_START  {`CHAR_CODE__, `CHAR_CODE_S, `CHAR_CODE_T, `CHAR_CODE_A, `CHAR_CODE_R, `CHAR_CODE_T}
+
+
+`define CHAR_ASCI_ARRAY  "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 `define CHAR_MORSE_A   ".-"
 `define CHAR_MORSE_B   "-..."
