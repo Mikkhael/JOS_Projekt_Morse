@@ -7,6 +7,7 @@ module MORSE_CAPTURE_CHAR
 (
     clk,
     ce,
+    aclr,
 
 	dit_time,
 	dah_time,
@@ -26,6 +27,7 @@ module MORSE_CAPTURE_CHAR
 
 input wire clk;
 input wire ce;
+input wire aclr;
 
 input wire [`PULSE_CNT_W-1 : 0] dit_time;
 input wire [`PULSE_CNT_W-1 : 0] dah_time;
@@ -84,7 +86,15 @@ wire [`PULSE_CNT_W-1 : 0] minimal_word_time = word_time - tol_time;
 
 always @(posedge clk) begin
     
-    if(ce) begin
+    if(aclr) begin
+        char_end <= 0;
+        word_end <= 0;
+        run <= 0;
+        last_signal <= 0;
+        error <= 0;
+        len <= 0;
+    end
+    else if(ce) begin
         case({last_signal, signal})
         2'b00: begin
             if (pulse_cnt >= minimal_char_time && run) begin

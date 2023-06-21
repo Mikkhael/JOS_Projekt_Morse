@@ -8,6 +8,7 @@ module MORSE_CAPTURE_AND_DECODE_WORD
 (
     clk,
     ce,
+    aclr,
 
 	dit_time,
 	dah_time,
@@ -23,6 +24,7 @@ module MORSE_CAPTURE_AND_DECODE_WORD
 
 input wire clk;
 input wire ce;
+input wire aclr;
 
 input wire [`PULSE_CNT_W-1 : 0] dit_time;
 input wire [`PULSE_CNT_W-1 : 0] dah_time;
@@ -45,6 +47,7 @@ wire capture_word_end;
 MORSE_CAPTURE_CHAR#(.DEBUG(DEBUG_CAPTURE)) u_capture(
     .clk        (clk),
     .ce         (ce),
+    .aclr       (aclr),
 	.dit_time   (dit_time),
 	.dah_time   (dah_time),
 	.word_time  (word_time),
@@ -60,6 +63,7 @@ MORSE_CAPTURE_CHAR#(.DEBUG(DEBUG_CAPTURE)) u_capture(
 MORSE_DECODE_WORD#(.DEBUG(DEBUG_DECODE)) u_decode(
     .clk        (clk),
     .ce         (capture_ceo),
+    .aclr       (aclr),
     .dits_dahs  (dits_dahs),
     .len        (len),
     .word_end   (capture_word_end),

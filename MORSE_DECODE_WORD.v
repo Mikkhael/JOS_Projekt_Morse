@@ -7,6 +7,7 @@ module MORSE_DECODE_WORD
 (
     clk,
     ce,
+    aclr,
 
     dits_dahs,
     len,
@@ -20,6 +21,7 @@ module MORSE_DECODE_WORD
 
 input wire clk;
 input wire ce;
+input wire aclr;
 
 input wire [`MORSE_LEN_W-1   : 0] len;
 input wire [`MAX_MORSE_LEN-1 : 0] dits_dahs;
@@ -41,7 +43,12 @@ MORSE_RECOGNIZE_CHAR u_recognize(
 
 always @(posedge clk) begin
     
-    if(ce) begin
+    if(aclr) begin
+        word <= {`MAX_CHARS{ `CHAR_CODE__ }};
+        word_ended <= 1;
+        error <= 0;
+    end
+    else if(ce) begin
         if(word_end) begin
             if(DEBUG) $display("   ENDING DECODE");
             word_ended <= 1;

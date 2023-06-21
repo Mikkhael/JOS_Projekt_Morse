@@ -21,7 +21,7 @@ wire clk    = clk50;
 wire ce     = SW[0];
 
 wire enable_morse = SW[1];
-wire signal = KEY[1];
+wire signal = ~(KEY[1]);
 
 wire btn_rt = KEY[0];
 wire btn_up = KEY[1];
@@ -75,10 +75,13 @@ wire decode_error;
 wire decode_word_ended;
 wire [`CHAR_W*`MAX_CHARS-1 : 0] decode_word;
 
-// TODO enable reseting when not in enable_morse mode
-MORSE_CAPTURE_AND_DECODE_WORD u_capture_and_decode(
+MORSE_CAPTURE_AND_DECODE_WORD #(
+	.DEBUG_CAPTURE(1),
+	.DEBUG_DECODE(1)
+) u_capture_and_decode(
     .clk         (clk),
     .ce          (ce & conf_ready & enable_morse),
+	.aclr		 ((!enable_morse) || (!conf_ready)),
 	.dit_time    (dit_time),
 	.dah_time    (dah_time),
 	.word_time   (word_time),
@@ -92,12 +95,25 @@ MORSE_CAPTURE_AND_DECODE_WORD u_capture_and_decode(
 
 wire [`UNIT_BCD_W*`CHAR_W-1 : 0] word_to_show = enable_morse ? decode_word : menu_word;
 
-CHAR2SEG u_seg0 (word_to_show >> (0 * `CHAR_W), HEX0);
-CHAR2SEG u_seg1 (word_to_show >> (1 * `CHAR_W), HEX1);
-CHAR2SEG u_seg2 (word_to_show >> (2 * `CHAR_W), HEX2);
-CHAR2SEG u_seg3 (word_to_show >> (3 * `CHAR_W), HEX3);
-CHAR2SEG u_seg4 (word_to_show >> (4 * `CHAR_W), HEX4);
-CHAR2SEG u_seg5 (word_to_show >> (5 * `CHAR_W), HEX5);
+wire blink_ceo;
+PRESCALER #(.W(20), .MAX(1)) blink_prescaler(
+    .clk(clk),
+    .ce(ce),
+    .ceo(blink_ceo)
+);
+
+reg do_blink = 0;
+always @(posedge clk) begin
+	if(ce && blink_ceo)
+		do_blink <= !do_blink;
+end
+
+CHAR2SEG u_seg0 (blinking[0] & do_blink, word_to_show >> (0 * `CHAR_W), HEX0);
+CHAR2SEG u_seg1 (blinking[1] & do_blink, word_to_show >> (1 * `CHAR_W), HEX1);
+CHAR2SEG u_seg2 (blinking[2] & do_blink, word_to_show >> (2 * `CHAR_W), HEX2);
+CHAR2SEG u_seg3 (blinking[3] & do_blink, word_to_show >> (3 * `CHAR_W), HEX3);
+CHAR2SEG u_seg4 (blinking[4] & do_blink, word_to_show >> (4 * `CHAR_W), HEX4);
+CHAR2SEG u_seg5 (blinking[5] & do_blink, word_to_show >> (5 * `CHAR_W), HEX5);
 
 assign LED[0] = decode_word_ended;
 assign LED[1] = conf_ready;
