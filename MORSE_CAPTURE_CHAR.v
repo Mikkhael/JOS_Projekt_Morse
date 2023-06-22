@@ -20,6 +20,7 @@ module MORSE_CAPTURE_CHAR
     dits_dahs,
     error,
 
+	 run,
     word_end,
     ceo
 
@@ -40,6 +41,7 @@ output reg [`MORSE_LEN_W-1   : 0] len = 0;
 output reg [`MAX_MORSE_LEN-1 : 0] dits_dahs = 0;
 output reg error = 0;
 
+output reg run = 0;
 output reg word_end = 0;
 output wire ceo;
 
@@ -54,7 +56,6 @@ assign ceo = ce & (
     word_end & (~last_word_end)
 );
 
-reg run = 0;
 reg last_signal = 0;
 
 wire signal_changed = last_signal ^ signal;

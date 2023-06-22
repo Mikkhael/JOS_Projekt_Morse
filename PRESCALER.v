@@ -1,7 +1,7 @@
 module PRESCALER
 #(
-    parameter W   = 4,
-    parameter MAX = 9
+    parameter MAX = 9,
+    parameter W   = $clog2(MAX + 1)
 )
 (
     input clk,

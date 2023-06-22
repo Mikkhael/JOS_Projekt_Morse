@@ -1,7 +1,11 @@
 `ifndef DEFS
 `define DEFS
 
-`define MANUAL_DEBUG
+//`define MANUAL_DEBUG
+
+`define CLK_FREQ 50000000
+`define BLINK_FREQ (`CLK_FREQ / 5)
+
 
 `define UNIT_BCD_W       6
 `define PULSE_CNT_W      40
@@ -11,7 +15,6 @@
 `define MORSE_LEN_W      3
 `define CHAR_W           7
 `define MAX_CHARS        6
-
 
 `define CHAR_CODE_0   `CHAR_W'd0
 `define CHAR_CODE_1   `CHAR_W'd1
@@ -55,15 +58,14 @@
 
 `define CHARS_COUNT   37
 
-`define MENU_INDEX_W     2
-`define MENU_INDEX_MAX   2
+`define MENU_INDEX_W     3
+`define MENU_INDEX_MAX   4
 
 `define MENU_WORD_DIT    {`CHAR_CODE__, `CHAR_CODE__, `CHAR_CODE__, `CHAR_CODE_D, `CHAR_CODE_I, `CHAR_CODE_T}
 `define MENU_WORD_DAH    {`CHAR_CODE__, `CHAR_CODE__, `CHAR_CODE__, `CHAR_CODE_D, `CHAR_CODE_A, `CHAR_CODE_H}
 `define MENU_WORD_WORD   {`CHAR_CODE__, `CHAR_CODE__, `CHAR_CODE_W, `CHAR_CODE_O, `CHAR_CODE_R, `CHAR_CODE_D}
-
-`define MENU_WORD_START  {`CHAR_CODE__, `CHAR_CODE_S, `CHAR_CODE_T, `CHAR_CODE_A, `CHAR_CODE_R, `CHAR_CODE_T}
-
+`define MENU_WORD_TOL    {`CHAR_CODE__, `CHAR_CODE__, `CHAR_CODE__, `CHAR_CODE_T, `CHAR_CODE_O, `CHAR_CODE_L}
+`define MENU_WORD_PPU    {`CHAR_CODE__, `CHAR_CODE__, `CHAR_CODE__, `CHAR_CODE_P, `CHAR_CODE_P, `CHAR_CODE_U}
 
 `define CHAR_ASCI_ARRAY  "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ "
 

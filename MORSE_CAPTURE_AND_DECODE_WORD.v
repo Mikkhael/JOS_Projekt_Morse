@@ -17,6 +17,7 @@ module MORSE_CAPTURE_AND_DECODE_WORD
 
     signal,
 
+	 capture_running,
     word,
     word_ended,
     error
@@ -33,6 +34,7 @@ input wire [`PULSE_CNT_W-1 : 0] tol_time;
 
 input wire signal;
 
+output wire capture_running;
 output wire [`CHAR_W*`MAX_CHARS-1 : 0] word;
 output wire error;
 output wire word_ended;
@@ -56,6 +58,7 @@ MORSE_CAPTURE_CHAR#(.DEBUG(DEBUG_CAPTURE)) u_capture(
     .len        (len),
     .dits_dahs  (dits_dahs),
     .error      (capture_error),
+	 .run        (capture_running),
     .word_end   (capture_word_end),
 	.ceo        (capture_ceo)
 );

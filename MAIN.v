@@ -18,15 +18,29 @@ module MAIN(
 
 
 wire clk    = clk50;
-wire ce     = SW[0];
-
-wire enable_morse = SW[1];
-wire signal = ~(KEY[1]);
+wire ce     = SW[9];
+wire enable_morse = SW[0];
+wire signal = ~(KEY[0]);
 
 wire btn_rt = KEY[0];
 wire btn_up = KEY[1];
 wire btn_dn = KEY[2];
 wire btn_lf = KEY[3];
+
+wire LED_Error;
+wire LED_Running;
+wire LED_Signal;
+wire LED_Morse;
+wire LED_Ready;
+wire LED_WordEnded;
+
+assign LED[9] = LED_Error;
+assign LED[8] = LED_WordEnded;
+assign LED[5] = LED_Signal;
+assign LED[2] = LED_Running;
+assign LED[1] = LED_Morse;
+assign LED[0] = LED_Ready;
+
 
 wire [`PULSE_CNT_W-1 : 0] dit_time;
 wire [`PULSE_CNT_W-1 : 0] dah_time;
@@ -41,7 +55,7 @@ wire conf_selected_set;
 
 CONF u_conf(
     .clk				(clk),
-    .ce					(ce),
+    .ce					(ce & (~enable_morse)),
 	.dit_time			(dit_time),
 	.dah_time			(dah_time),
 	.word_time			(word_time),
@@ -58,35 +72,37 @@ wire [`UNIT_BCD_W*`CHAR_W-1:0] menu_word;
 
 MENU u_menu(
     .clk                     (clk),
-    .ce                      (ce),
+    .ce                      (ce & ~enable_morse),
     .btn_up                  (btn_up),
     .btn_dn                  (btn_dn),
     .btn_lf                  (btn_lf),
     .btn_rt                  (btn_rt),
-	.conf_selected_index     (conf_selected_index),
-	.conf_selected_value     (conf_selected_value),
-	.conf_selected_new_value (conf_selected_new_value),
-	.conf_selected_set       (conf_selected_set),
+	 .conf_selected_index     (conf_selected_index),
+	 .conf_selected_value     (conf_selected_value),
+	 .conf_selected_new_value (conf_selected_new_value),
+	 .conf_selected_set       (conf_selected_set),
     .blinking                (blinking),
     .menu_word               (menu_word)
 );
 
 wire decode_error;
+wire capture_running;
 wire decode_word_ended;
 wire [`CHAR_W*`MAX_CHARS-1 : 0] decode_word;
 
 MORSE_CAPTURE_AND_DECODE_WORD #(
-	.DEBUG_CAPTURE(1),
-	.DEBUG_DECODE(1)
+	.DEBUG_CAPTURE(0),
+	.DEBUG_DECODE(0)
 ) u_capture_and_decode(
     .clk         (clk),
     .ce          (ce & conf_ready & enable_morse),
-	.aclr		 ((!enable_morse) || (!conf_ready)),
-	.dit_time    (dit_time),
-	.dah_time    (dah_time),
-	.word_time   (word_time),
-	.tol_time    (tol_time),
+	 .aclr		  ((!enable_morse) || (!conf_ready)),
+	 .dit_time    (dit_time),
+	 .dah_time    (dah_time),
+	 .word_time   (word_time),
+	 .tol_time    (tol_time),
     .signal      (signal),
+	 .capture_running (capture_running),
     .word        (decode_word),
     .word_ended  (decode_word_ended),
     .error       (decode_error)
@@ -96,7 +112,7 @@ MORSE_CAPTURE_AND_DECODE_WORD #(
 wire [`UNIT_BCD_W*`CHAR_W-1 : 0] word_to_show = enable_morse ? decode_word : menu_word;
 
 wire blink_ceo;
-PRESCALER #(.W(20), .MAX(1)) blink_prescaler(
+PRESCALER #(.MAX(`BLINK_FREQ)) blink_prescaler(
     .clk(clk),
     .ce(ce),
     .ceo(blink_ceo)
@@ -105,7 +121,7 @@ PRESCALER #(.W(20), .MAX(1)) blink_prescaler(
 reg do_blink = 0;
 always @(posedge clk) begin
 	if(ce && blink_ceo)
-		do_blink <= !do_blink;
+		do_blink <= !do_blink & (~enable_morse);
 end
 
 CHAR2SEG u_seg0 (blinking[0] & do_blink, word_to_show >> (0 * `CHAR_W), HEX0);
@@ -115,9 +131,12 @@ CHAR2SEG u_seg3 (blinking[3] & do_blink, word_to_show >> (3 * `CHAR_W), HEX3);
 CHAR2SEG u_seg4 (blinking[4] & do_blink, word_to_show >> (4 * `CHAR_W), HEX4);
 CHAR2SEG u_seg5 (blinking[5] & do_blink, word_to_show >> (5 * `CHAR_W), HEX5);
 
-assign LED[0] = decode_word_ended;
-assign LED[1] = conf_ready;
-assign LED[2] = decode_error;
-assign LED[3] = enable_morse;
+
+assign LED_Error 		= decode_error;
+assign LED_WordEnded = decode_word_ended;
+assign LED_Running   = capture_running;
+assign LED_Morse		= enable_morse;
+assign LED_Ready		= conf_ready;
+assign LED_Signal		= signal;
 
 endmodule

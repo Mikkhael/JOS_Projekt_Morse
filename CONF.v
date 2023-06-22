@@ -43,8 +43,11 @@ output wire ready;
 	output reg [`UNIT_BCD_W*4-1 : 0] word_units   = 24'h7000;
 	output reg [`UNIT_BCD_W*4-1 : 0] tol_units    = 24'h0500;
 
+	// Domyslnie 1000 units == 1 sekunda
 	output reg [`UNIT_BCD_W*4-1 : 0] pulses_per_unit = 24'h50000;
 `endif
+
+
 
 output wire [`PULSE_CNT_W-1 : 0] dit_time;
 output wire [`PULSE_CNT_W-1 : 0] dah_time;

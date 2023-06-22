@@ -77,6 +77,8 @@ always @(posedge clk) begin
                 `MENU_INDEX_W'd0: menu_word <= `MENU_WORD_DIT;
                 `MENU_INDEX_W'd1: menu_word <= `MENU_WORD_DAH;
                 `MENU_INDEX_W'd2: menu_word <= `MENU_WORD_WORD;
+                `MENU_INDEX_W'd3: menu_word <= `MENU_WORD_TOL;
+                `MENU_INDEX_W'd4: menu_word <= `MENU_WORD_PPU;
             endcase
 
                  if(btn_up_edge) menu_index <= (menu_index != 0)               ? menu_index - 1'd1 : menu_index;
