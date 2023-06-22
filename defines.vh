@@ -1,21 +1,32 @@
+// Stałe wartości używane w całym projekcie
+
 `ifndef DEFS
 `define DEFS
 
+// Inicjacja wartości w module CONF na ułatwiające debugowanie ręcznym zegarem
 //`define MANUAL_DEBUG
 
+// Częstotliwosc zegara
 `define CLK_FREQ 50000000
+// Częstotliwośc migania wybranych cyft na wyświetlaczach 7-segmentowych
 `define BLINK_FREQ (`CLK_FREQ / 5)
 
-
+// Liczba cyft wartości BCD w module CONF
 `define UNIT_BCD_W       6
+// Szerokość zmiennej zliczającej pulsy zegara
 `define PULSE_CNT_W      40
 `define PULSE_CNT_HALF_W 20
 
+// Najdłuższa długość pojedyńczego znaku sygnału Morse'a
 `define MAX_MORSE_LEN    5
+// Szerokość zmiennej przechowującej odczytaną długość znaku sygnału Morse'a
 `define MORSE_LEN_W      3
+// Szerokość wartości kodującej wyświetlalne znaki
 `define CHAR_W           7
+// Maksymalna liczba znaków w słowei sygnału Morse'a
 `define MAX_CHARS        6
 
+// Kodowanie poszczególnych znaków wyświetlalnych
 `define CHAR_CODE_0   `CHAR_W'd0
 `define CHAR_CODE_1   `CHAR_W'd1
 `define CHAR_CODE_2   `CHAR_W'd2
@@ -56,17 +67,22 @@
 
 `define CHAR_CODE__   `CHAR_W'd36
 
+// Liczba zdefiniowanych znaków
 `define CHARS_COUNT   37
 
+// Szerokość i maksymalna wartosć zmiennej przechowującej indeks wybranej opcji w MENU
 `define MENU_INDEX_W     3
 `define MENU_INDEX_MAX   4
 
+// Wyświetlane nazwy poszczególnych opcji w MENU
 `define MENU_WORD_DIT    {`CHAR_CODE__, `CHAR_CODE__, `CHAR_CODE__, `CHAR_CODE_D, `CHAR_CODE_I, `CHAR_CODE_T}
 `define MENU_WORD_DAH    {`CHAR_CODE__, `CHAR_CODE__, `CHAR_CODE__, `CHAR_CODE_D, `CHAR_CODE_A, `CHAR_CODE_H}
 `define MENU_WORD_WORD   {`CHAR_CODE__, `CHAR_CODE__, `CHAR_CODE_W, `CHAR_CODE_O, `CHAR_CODE_R, `CHAR_CODE_D}
 `define MENU_WORD_TOL    {`CHAR_CODE__, `CHAR_CODE__, `CHAR_CODE__, `CHAR_CODE_T, `CHAR_CODE_O, `CHAR_CODE_L}
 `define MENU_WORD_PPU    {`CHAR_CODE__, `CHAR_CODE__, `CHAR_CODE__, `CHAR_CODE_P, `CHAR_CODE_P, `CHAR_CODE_U}
 
+
+// Zmienne do ułatwienia debugowania Testbench'y
 `define CHAR_ASCI_ARRAY  "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ "
 
 `define CHAR_MORSE_A   ".-"

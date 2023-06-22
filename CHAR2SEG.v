@@ -1,15 +1,16 @@
 `include "defines.vh"
 
+// Układ kombinacyjny transkodujący kod znaku na stany LED'ów wyświetlacza 7-segmentowego
 module CHAR2SEG(
-	input blink,
-	input  wire [`CHAR_W-1 : 0] char,
-	output reg  [6:0] seg
+	input blink, // Czy znak ma migać
+	input  wire [`CHAR_W-1 : 0] char, // Wejściowy kod znaku
+	output reg  [6:0] seg // Wyjście do wyświetlacza
 );
 
 always @(*) begin
 
 	if (blink) 
-		seg <= 7'b1111111;
+		seg <= 7'b1111111; // Jeśli znak ma aktualnie migać, to wyłącz wyświetlacz
 	else
 		case(char)
 			`CHAR_CODE_0: seg <= 7'b1000000;

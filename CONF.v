@@ -1,26 +1,35 @@
 `include "defines.vh"
 
+// Moduł odpowiedzialny z przechowywanie i wyznaczanie zkonfigurowanej liczby pulsów sygnału zegarowego,
+// które odpowidają odpowiednim timingom sygnału Morse'a
+// Sygnału przechowywane są w BCD, co ułatwia wprowadzanie ich wartości w MENU, a następnie konwertowane na kod binarny
 module CONF(
 	clk,
 	ce,
 
-	dit_units,
-	dah_units,
-	word_units,
-	tol_units,
+	// Wartości przechowywanych wartości czasu trwania sygnałów, jako liczba jednostek czasu w BCD
+	dit_units, // Długość trwania kropki oraz przerwy między kropkami i kreskami w obrębie znaku
+	dah_units, // Długość trwania kreski oraz przerwy między znakami w obrębie słowa
+	word_units, // Długosć trwania przerwy między słowami
+	tol_units, // Tolerancja, liczba jednostek czasu o ile +- można nie trafić w powyższe sygnały
+	
+	// Wartość przehcowywanej wartości liczby pulsów zegara przypadających na jedną jednostkę czasu, w BCD
 	pulses_per_unit,
 	
+	// Wyznaczone wartości powyższych czasów, jako liczba pulsów zegara a nie jednostek, w kodzie binarnym
 	dit_time,
 	dah_time,
 	word_time,
 	tol_time,
 
+	// Sygnał określający, czy wszystkie wartości zostały wyznacznoe
 	ready,
 
-	selected_index,
-	selected_value,
-	selected_new_value,
-	selected_set
+	// Sygnały do komunikacji z modułem MENU
+	selected_index, // indeks wybranej opcji
+	selected_value, // zwracana wartosc wybranej opcji
+	selected_new_value, // nowa wartość wybranej opcji
+	selected_set // nadpisanie wybranej opcji nową wartością
 );
 
 
@@ -28,6 +37,7 @@ input  wire clk;
 input  wire ce;
 output wire ready;
 
+// Domyślne wartości opcji
 `ifdef MANUAL_DEBUG
 
 	output reg [`UNIT_BCD_W*4-1 : 0] dit_units    = 24'h2;
@@ -60,8 +70,9 @@ output reg [`UNIT_BCD_W*4-1 : 0] selected_value;
 input wire [`UNIT_BCD_W*4-1 : 0] selected_new_value;
 input wire selected_set;
 
-reg update = 1;
+reg update = 1; // Sygnał określający, czy rozpocząć liczenie wartości opcji w kodzie binarnym na nowo
 
+// Moduł liczący wartości timingów z BCD na kod binarny
 CONF_TO_TIMINGS u_conf_to_timings(
     .clk				(clk),
     .ce					(ce),
@@ -78,6 +89,7 @@ CONF_TO_TIMINGS u_conf_to_timings(
     .ready				(ready)
 );
 
+// Wybór wartości opcji, zależnie od indeksu
 always @(*) begin
 	case(selected_index)
 		3'd0:    selected_value <= dit_units;
@@ -88,10 +100,11 @@ always @(*) begin
 	endcase
 end
 
+// Nadpisanie wartości opcji, zależnie od indeksu
 always @(posedge clk) begin
 	if(ce) begin
 		if(selected_set) begin
-			update <= 1;
+			update <= 1; // Rozpoczęcie przeliczenia wartości na kod binarny
 			case(selected_index)
 				3'd0: dit_units       <= selected_new_value;
 				3'd1: dah_units       <= selected_new_value;

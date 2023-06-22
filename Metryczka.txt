@@ -1,0 +1,12 @@
+NUMER PROJEKTU:            23
+TEMAT PROJEKTU:            Układ do detekcji znaków alfabetu Morse’a
+AUTOR PROJEKTU:            Michał Gold
+DATA ZAKOŃCZENIA PROJEKTU: 22.06.2023
+
+OPIS PROJEKTU:
+    Projekt pozwala na detekcję znaków alfabetu Morse'A
+    Sygnał Morse'a należy wprowadzić poprzez jeden z przycisków na płytce FPGA
+    Zdekodowana sekwencja znaków wyświetlana jest na wyświetlaczach 7-segmentowych
+    Na diodach LED wyświetlane jest też kilka sygnałów diagnostycznych, jak np. czy zakończono wczytywanie słowa, czy wystąpił bład itd.
+    Dodatkowo, projekt pozwala przejść w tryb MENU, w którym możliwa jest dowonla zmiana konfiguracji poprzez przyciski.
+    Konfiguracja składa się z timingów poszczególnych rodzajów sygnału morsa, jak długość trwania kropki, odstępy między słowami itd.

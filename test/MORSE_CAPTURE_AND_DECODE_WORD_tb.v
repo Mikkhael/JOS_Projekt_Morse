@@ -2,12 +2,14 @@
 
 `include "../defines.vh"
 
+// Moduł testujący moduł MORSE_CAPTURE_AND_DECODE_WORD
 module MORSE_CAPTURE_AND_DECODE_WORD_tb();
 
 reg clk = 0;
 reg ce = 0;
 reg signal = 0;
 
+// Przykładowe wartości timingów
 reg  [`PULSE_CNT_W-1 : 0] DIT  = 2;
 reg  [`PULSE_CNT_W-1 : 0] DAH  = 6;
 reg  [`PULSE_CNT_W-1 : 0] WORD = 14;
@@ -20,9 +22,11 @@ wire error;
 wire word_ended;
 wire [`CHAR_W*`MAX_CHARS-1 : 0] word;
 
+// Oczekiwane wyjście z modułu
 reg [8*`MAX_CHARS-1 : 0] expected_word = 0;
 reg expect_error = 0;
 
+// Testowany moduł
 MORSE_CAPTURE_AND_DECODE_WORD#(
     .DEBUG_CAPTURE(1),
     .DEBUG_DECODE(1)
@@ -39,6 +43,7 @@ MORSE_CAPTURE_AND_DECODE_WORD#(
     .error       (error)
 );
 
+// Wyświetlenie aktualnego zwracanego słowa, przy każdej jego zmianie
 always @(word) begin
     $display("   WORD: %s (%2d,%2d,%2d,%2d,%2d,%2d) (err=%b)", word_to_ascii(word),
          word[`CHAR_W-1+`CHAR_W*5 : `CHAR_W*5],
@@ -51,6 +56,7 @@ always @(word) begin
     );
 end
 
+// Porównanie wyjścia otrzymanego z oczekiwanym
 reg is_good = 1;
 always @(posedge word_ended) begin
     $display("   END:  %s", word_to_ascii(word));
@@ -77,6 +83,7 @@ initial begin
     WAIT(10);
     ce = 1;
 
+    // Wysłanie kolejnych sekwencji znaków
     expected_word = "     A";
     SEND_STR_CHAR(`CHAR_MORSE_A, 1);
     WAIT(1);
@@ -123,7 +130,7 @@ initial begin
     expect_error = 1;
     SEND_STR_CHAR(`CHAR_MORSE_A, 0);
     SEND_STR_CHAR(`CHAR_MORSE_B, 0);
-    SEND_SIGNAL(1, 3*WORD_END);
+    SEND_SIGNAL(1, 3*WORD_END); // Symulacja za długiego dopuszczalnego sygnału wejściowego
     SEND_STR_CHAR(`CHAR_MORSE_C, 0);
     SEND_STR_CHAR(`CHAR_MORSE_D, 1);
     WAIT(1);

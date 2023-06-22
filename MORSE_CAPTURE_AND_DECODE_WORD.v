@@ -1,7 +1,9 @@
 `include "defines.vh"
 
+// Moduł odpowiedzialny za całą logikę związaną z dekodowaniem sygnału Morse'a
 module MORSE_CAPTURE_AND_DECODE_WORD
 #(
+    // Pomocnicze sygnały do debugowania w symulacji
     parameter DEBUG_CAPTURE = 0,
     parameter DEBUG_DECODE = 0
 )
@@ -10,17 +12,19 @@ module MORSE_CAPTURE_AND_DECODE_WORD
     ce,
     aclr,
 
+    // Wartości czasów poszczególnych sygnałów Morse'a
 	dit_time,
 	dah_time,
 	word_time,
 	tol_time,
 
+    // Wejsćiowy sygnał Morse'a
     signal,
 
-	 capture_running,
-    word,
-    word_ended,
-    error
+	capture_running, // Sygnalizacja, czy aktualnie wczytywane jest nowy znak
+    word, // Oktualnie wczytane słowo, jako lista kodów znaków
+    word_ended, // Sygnalizacja, czy słowo jest zakończone
+    error // Sygnalizacja, czy wystąpił błąd
 );
 
 input wire clk;
@@ -45,7 +49,7 @@ wire capture_error;
 wire capture_ceo;
 wire capture_word_end;
 
-
+// Pozyskanie kolejnych znaków
 MORSE_CAPTURE_CHAR#(.DEBUG(DEBUG_CAPTURE)) u_capture(
     .clk        (clk),
     .ce         (ce),
@@ -63,6 +67,7 @@ MORSE_CAPTURE_CHAR#(.DEBUG(DEBUG_CAPTURE)) u_capture(
 	.ceo        (capture_ceo)
 );
 
+// Dekodowanie kolejnych znaków i zapis do rejestru przesównego
 MORSE_DECODE_WORD#(.DEBUG(DEBUG_DECODE)) u_decode(
     .clk        (clk),
     .ce         (capture_ceo),

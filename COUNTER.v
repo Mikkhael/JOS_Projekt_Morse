@@ -1,7 +1,8 @@
+// Zwykły licznik binarny
 module COUNTER
 #(
     parameter W   = 4,
-    parameter SCLR_VAL = 0
+    parameter SCLR_VAL = 0 // wartość, jaką licznik przyjmuje po wyzerowaniu
 )
 (
     input clk,

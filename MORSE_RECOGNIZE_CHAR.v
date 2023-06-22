@@ -1,10 +1,11 @@
 `include "defines.vh"
 
+// Układ kombinacyjny, transkodujący sekwencję kropek i kresek (wraz z ich liczbą) na kod znaku wyświetlalnego
 module MORSE_RECOGNIZE_CHAR(
-	len,
-	dits_dahs,
+	len, // Liczba znaczących kropek i kresek
+	dits_dahs, // Kropki i kreski (1 - kreska, 0 - kropka)
 	
-	char
+	char // Zdekodowany kod znaku
 );
 
 

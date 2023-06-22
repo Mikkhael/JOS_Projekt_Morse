@@ -1,16 +1,19 @@
 `timescale 1ps/1ps
 `include "../defines.vh"
 
+// Moduł testujący moduł MENU
 module MENU_tb();
 
 reg clk    = 0;
 reg ce     = 1;
 
+// Sygnały wejsciowe przycisków
 reg btn_up = 1;
 reg btn_dn = 1;
 reg btn_lf = 1;
 reg btn_rt = 1;
 
+// Sygnały do komunikacji z modułem CONF
 wire [2:0] conf_selected_index;
 wire [`UNIT_BCD_W*4-1 : 0] conf_selected_value;
 wire [`UNIT_BCD_W*4-1 : 0] conf_selected_new_value;
@@ -19,6 +22,7 @@ wire [`UNIT_BCD_W-1:0] blinking;
 wire [`UNIT_BCD_W*`CHAR_W-1:0] menu_word;
 wire conf_ready;
 
+// Testowany moduł
 MENU u_menu(
     .clk                     (clk),
     .ce                      (ce),
@@ -34,7 +38,7 @@ MENU u_menu(
     .menu_word               (menu_word)
 );
 
-
+// Moduł CONF, potrzebny do testów
 CONF u_conf(
     .clk				(clk),
     .ce					(ce),
@@ -45,6 +49,7 @@ CONF u_conf(
     .ready              (conf_ready)
 );
 
+// Podgląd sygnałów wyjściowych z modułu, za każdą ich zmianą
 always @(*) begin
     $display("NAME:%s CONF:[IDX:%b, VAL:%h, NEW:%h, SET:%b], BLNK:%b, RDY:%b", 
         word_to_ascii(menu_word),
@@ -61,6 +66,9 @@ integer i;
 initial begin
 
     WAIT(10);
+
+    // Symulacja naciśnięć sekwencji naciśnięć danych klawiszy
+    // Tester musi prześledzić waveform i logi aby określić, czy moduł zachowuje się w oczekiwany sposób
 
     PRESS("U");
     PRESS("D");
@@ -92,6 +100,7 @@ initial begin
 end
 
 
+// Oczekiwanie liczby pulsów zegara
 task automatic WAIT(input integer rep);
     integer i = 0;
 begin
@@ -102,6 +111,7 @@ begin
 end
 endtask
 
+// Symuylacja naciśnięcia przycisku
 task automatic PRESS(input [7:0] btn);
 begin
     $display("PRESS %s", btn);
@@ -123,7 +133,7 @@ begin
 end
 endtask
 
-
+// Konwersja sekwencji kodów znaków na znak wyświetlalny w konsoli symnulatora
 function [9*`UNIT_BCD_W-1 : 0] word_to_ascii(input [`CHAR_W*`UNIT_BCD_W-1 : 0] word);
     integer i;
 begin

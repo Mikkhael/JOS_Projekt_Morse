@@ -1,5 +1,6 @@
+// Taski używane w wielu testbenchach
 
-
+// Odczekanie danej liczby cykli zegara
 task automatic WAIT(input integer rep);
     integer i = 0;
 begin
@@ -10,12 +11,14 @@ begin
 end
 endtask
 
+// Odczekanie danej liczby cykli zegara z losowmym uwzględnieniem tolerancji z modułu CONF
 task automatic WAIT_TOL(input integer rep);
 begin
     WAIT(rep + ({$random} % (2*SIM_TOL + 1)) - SIM_TOL);
 end
 endtask
 
+// Zmiana sygnału wejśćiowego z odczekaniem zadanej liczby pulsów
 task automatic SEND_SIGNAL(input state, input [`PULSE_CNT_W-1 : 0] pulses);
 begin
     signal = state;
